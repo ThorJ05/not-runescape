@@ -5,11 +5,16 @@ public class Player
     public int CurrentHp { get; set; } = 35;
     public int MaxHp { get; set; } = 35;
     public int Gold { get; set; } = 50;
-    public Dictionary<string, int> Inventory { get; set; } = new()
+    public Dictionary<string, int> Inventory { get; set; } = new(StringComparer.OrdinalIgnoreCase)
     {
         { "Lobster", 3 },
         { "Rune Scimitar", 1 }
     };
+
+    public void SetStartingGold(int gold)
+    {
+        Gold = gold;
+    }
 
     public void AddItem(string item, int amount)
     {
@@ -32,6 +37,11 @@ public class Player
             Inventory.Remove(item);
         }
         return true;
+    }
+
+    public void ResetHealth()
+    {
+        CurrentHp = MaxHp;
     }
 
     public void PrintInventory()

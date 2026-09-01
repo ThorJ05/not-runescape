@@ -5,11 +5,21 @@ var bossLogs = new List<BossLog>();
 var player = new Player();
 
 Console.WriteLine("=== OSRS Boss & Combat Tracker ===");
+Console.WriteLine("What is your character name? ");
+
+var characterName = Console.ReadLine()?.Trim();
+
+if (string.IsNullOrWhiteSpace(characterName))
+    characterName = "Adventurer";
+
+Console.WriteLine($"Welcome to Gielinor, {characterName}");
+
+player.SetStartingGold(100);
 
 while (true)
 {
     Console.WriteLine($"\n[HP: {player.CurrentHp}/{player.MaxHp} | Gold: {player.Gold} GP]");
-    Console.Write("[1] Log Boss Kill  [2] View Drop Log  [3] View Inventory  [4] Drop Item  [99] Fight Hill Giant  [0] Exit\nChoice: ");
+    Console.Write("[1] Log Boss Kill  [2] View Drop Log  [3] View Inventory  [4] Drop Item  [5] Rest at Lumbridge [99] Fight Hill Giant  [0] Exit\nChoice: ");
     var input = Console.ReadLine()?.Trim();
 
     if (input == "0") break;
@@ -32,6 +42,8 @@ while (true)
     {
         Console.WriteLine("\n--- Drop Log ---");
         if (bossLogs.Count == 0) Console.WriteLine("No drops logged yet!");
+        else Console.WriteLine("You have " + bossLogs.Count + " drops logged.");
+        
         for (int i = 0; i < bossLogs.Count; i++)
         {
             var log = bossLogs[i];
@@ -46,6 +58,10 @@ while (true)
     else if (input == "4")
     {
         HandleDropItem(player);
+    }
+    else if (input == "5")
+    {
+        player.ResetHealth();
     }
     else if (input == "99")
     {
@@ -100,7 +116,7 @@ static void StartGiantFight(Player player, List<BossLog> bossLogs)
     while (player.CurrentHp > 0 && giantHp > 0)
     {
         Console.WriteLine($"Your HP: {player.CurrentHp}/{player.MaxHp} | Hill Giant HP: {giantHp}");
-        Console.Write("Action: [1] Slash with Rune Scimitar  [2] Eat Lobster\nChoice: ");
+        Console.Write("Action: [1] Slash with Rune Scimitar  [2] Eat Lobster  [3] Special Attack (50 GP)  [4] Flee Choice: ");
         var choice = Console.ReadLine()?.Trim();
 
         if (choice == "1")
@@ -124,6 +140,34 @@ static void StartGiantFight(Player player, List<BossLog> bossLogs)
                 Console.WriteLine("\nYou don't have any Lobsters in your inventory!");
             }
         }
+        else if (choice == "3")
+        {
+            if (player.Gold < 50)
+            {
+                Console.WriteLine("\nYou don't have enough GP to use a special attack! (Requires 50 GP)");
+            }
+            else
+            {
+                player.Gold -= 50;
+                int hit1 = rng.Next(0, 10);
+                int hit2 = rng.Next(0, 10);
+                int totalHit = hit1 + hit2;
+                giantHp -= totalHit;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\nYou unleash a Special Attack! Hits: {hit1} and {hit2} (Total {totalHit})");
+                Console.ResetColor();
+            }
+        }
+        else if (choice == "4")
+        {
+            Console.WriteLine("\nYou flee from the Hill Giant! Returning to Lumbridge...");
+            player.CurrentHp = player.MaxHp;
+            return;
+        }
+        else
+        {
+            Console.WriteLine("\nInvalid choice! Please select a valid action.");
+        }            
 
         if (giantHp > 0)
         {
