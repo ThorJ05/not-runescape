@@ -19,7 +19,7 @@ player.SetStartingGold(100);
 while (true)
 {
     Console.WriteLine($"\n[HP: {player.CurrentHp}/{player.MaxHp} | Gold: {player.Gold} GP]");
-    Console.Write("[1] Log Boss Kill  [2] View Drop Log  [3] View Inventory  [4] Drop Item  [5] Rest at Lumbridge [99] Fight Hill Giant  [0] Exit\nChoice: ");
+    Console.Write("[1] Log Boss Kill  [2] View Drop Log  [3] View Inventory  [4] Drop Item  [5] Rest at Lumbridge [67] Edgeville General Store Purchasing [99] Fight Hill Giant  [0] Exit\nChoice: ");
     var input = Console.ReadLine()?.Trim();
 
     if (input == "0") break;
@@ -63,9 +63,68 @@ while (true)
     {
         player.ResetHealth();
     }
+
+    else if (input == "67")
+    {
+        Console.Write("You rub your amulet of glory and teleport to Edgeville - You run to the general store");
+        HandleShop(player);
+    }
+    
     else if (input == "99")
     {
         StartGiantFight(player, bossLogs);
+    }
+}
+
+static void HandleShop(Player player)
+{
+    const int lobsterPrice = 20;
+    const int StrengthPotionPrice = 50;
+
+    while (true)
+    {
+        Console.WriteLine("\n--- Edgeville General Store ---");
+        Console.WriteLine($"[1] Lobster - {lobsterPrice} GP");
+        Console.WriteLine($"[2] Strength Potion - {StrengthPotionPrice} GP");
+        Console.WriteLine("[0] Leave Shop");
+        Console.Write($"You have {player.Gold} GP. Choice: ");
+        string? choice = Console.ReadLine()?.Trim();
+
+        if (choice == "1")
+        {
+            if (player.Gold >= lobsterPrice)
+            {
+                player.Gold -= lobsterPrice;
+                player.AddItem("Lobster", 1);
+                Console.WriteLine($"Bought 1x Lobster. You have {player.Gold} GP left.");
+            }
+            else
+            {
+                Console.WriteLine("You don't have enough gold for a Lobster.");
+            }
+        }
+        else if (choice == "2")
+        {
+            if (player.Gold >= StrengthPotionPrice)
+            {
+                player.Gold -= StrengthPotionPrice;
+                player.AddItem("Strength Potion", 1);
+                Console.WriteLine($"Bought 1x Strength Potion. You have {player.Gold} GP left.");
+            }
+            else
+            {
+                Console.WriteLine("You don't have enough gold for a Strength Potion.");
+            }
+        }
+        else if (choice == "0")
+        {
+            Console.WriteLine("You leave the store.");
+            return;
+        }
+        else
+        {
+            Console.WriteLine("Invalid choice.");
+        }
     }
 }
 
