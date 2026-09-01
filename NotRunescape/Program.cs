@@ -68,7 +68,7 @@ while (true)
         StartGiantFight(player, bossLogs);
     }
 }
-
+//done
 static void HandleDropItem(Player player)
 {
     player.PrintInventory();
