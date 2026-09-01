@@ -5,12 +5,46 @@ public class Player
     public int CurrentHp { get; set; } = 35;
     public int MaxHp { get; set; } = 35;
     public int Gold { get; set; } = 50;
+    
+    public List<int> HitHistory { get; set; }= new List<int>();
+    
     public Dictionary<string, int> Inventory { get; set; } = new(StringComparer.OrdinalIgnoreCase)
     {
         { "Lobster", 3 },
         { "Rune Scimitar", 1 }
     };
 
+    public void AddPlayerHit(int amount)
+    {
+        HitHistory.Add(amount);
+        for (var i = 0; i < HitHistory.Count; i++)
+        {
+            Console.WriteLine(i + ":" + HitHistory[i]);
+        }
+    }
+
+    public void FindTopThreeHits()
+    {
+        if (HitHistory.Count == 0)
+        {
+            Console.WriteLine("No hits yet");
+        }
+        int max = HitHistory.Max();
+        HitHistory.Remove(max);
+        
+        int secondmax = HitHistory.Max();
+        HitHistory.Remove(secondmax);
+        
+        int thirdmax = HitHistory.Max();
+        HitHistory.Remove(thirdmax);
+        
+        Console.WriteLine("Highest hit: " + max + "\n" + "Second highest hit: " + secondmax + "\n" + "Third highest hit: " + thirdmax);
+        HitHistory.Add(max);
+        HitHistory.Add(secondmax);
+        HitHistory.Add(thirdmax);
+    }
+
+    
     public void SetStartingGold(int gold)
     {
         Gold = gold;
